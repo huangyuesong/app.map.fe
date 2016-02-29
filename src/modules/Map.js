@@ -4,14 +4,24 @@ import React, {
 
 import config from '../../config/index';
 
-import '../styles/App.scss';
+import Loading from './Loading';
+
+import '../styles/Map.scss';
 
 export default class App extends Component {
+
+	constructor (props) {
+		super(props);
+
+		this.state = {
+			loading: true,
+		};
+	}
 
 	_initMap (markers) {
 		let map = new AMap.Map('map');
 
-		map.plugin(["AMap.ToolBar", "AMap.Scale"], function() {
+		map.plugin(["AMap.ToolBar", "AMap.Scale"], ()=> {
             map.addControl(new AMap.ToolBar());
             map.addControl(new AMap.Scale());
         });
@@ -39,10 +49,13 @@ export default class App extends Component {
 		const PROTOCOL = 'http://';
 		const IP = config.IP;
 		const PORT = ':8081';
-		const PATH = '/get/marker';
+		const PATH = '/api/get/marker';
 
 		fetch(`${PROTOCOL}${IP}${PORT}${PATH}`)
 			.then((res)=> {
+				this.setState({
+					loading: false,
+				});
 				return res.json();
 			})
 			.then((json)=> {
@@ -55,8 +68,14 @@ export default class App extends Component {
 	}
 
   	render () {
-    	return (
-    		<div id="map"></div>
-    	);
+		if (this.state.loading) {
+			return (
+				<Loading />
+			);
+		} else {
+			return (
+				<div id="map"></div>
+			);
+		}
   	}
 }

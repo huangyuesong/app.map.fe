@@ -12,10 +12,10 @@ import {
 
 import './src/polyfill/index';
 
-import App from './src/modules/App';
+import Map from './src/modules/Map';
 
 render((
   <Router history={browserHistory}>
-    <Route path="/" component={App}/>
+    <Route path="/" component={Map}/>
   </Router>
 ), document.getElementById('app'));

@@ -2,9 +2,11 @@ import React, {
 	Component,
 } from 'react';
 
-import config from '../../config/index';
+import { browserHistory } from 'react-router';
 
 import Loading from './Loading';
+
+import config from '../../config/index';
 
 import '../styles/Map.scss';
 
@@ -74,7 +76,13 @@ export default class App extends Component {
 			);
 		} else {
 			return (
-				<div id="map"></div>
+				<div className="map-wrapper">
+					<div id="map"></div>
+
+					<div className="back" onClick={(evt)=> browserHistory.goBack()}>
+						<p>{`<返回`}</p>
+					</div>
+				</div>
 			);
 		}
   	}

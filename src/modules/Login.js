@@ -16,16 +16,14 @@ export default class Login extends Component {
 		this.state = {
 			username: '',
 			password: '',
-			// randNum: '',
 		};
 	}
 
 	_onLoginBtnClick (evt) {
-		const url = `${config.energySystemURL}/loginIn_LoginInAction.action`;
+		const url = `${config.energySystemURL}/mobileLoginIn.action`;
 		let form = new FormData();
 		form.append('username', this.state.username);
 		form.append('password', this.state.password);
-		// form.append('randNum', this.state.randNum);
 
 		fetch(url, {
 			method: 'post',
@@ -34,16 +32,22 @@ export default class Login extends Component {
 		.then((res)=> {
 			return res.json();
 		})
-		.then((data)=> {
-			if (data.success) {
-				browserHistory.push(`/Map`);
+		.then((json)=> {
+			if (json.success) {
+				let { cId } = json;
+				browserHistory.push(`/Map?cId=${cId}`);
 			} else {
-				alert(data.errors);
+				alert(json.errors);
 			}
 		})
 		.catch((err)=> {
 			alert(err);
 		});
+	}
+
+	_onResetBtnClick (evt) {
+		this.refs.username.value = '';
+		this.refs.password.value = '';
 	}
 
 	render () {
@@ -58,7 +62,7 @@ export default class Login extends Component {
 								<label htmlFor="username">用户名：</label>
 							</td>
 							<td>
-								<input id="username"
+								<input id="username" ref="username"
 									onChange={(evt)=> this.setState({username: evt.target.value})} />
 							</td>
 						</tr>
@@ -67,28 +71,16 @@ export default class Login extends Component {
 								<label htmlFor="password">密码：</label>
 							</td>
 							<td>
-								<input id="password" name="password" type="password"
+								<input id="password" ref="password" type="password"
 									onChange={(evt)=> this.setState({password: evt.target.value})} />
 							</td>
 						</tr>
-						{/*<tr>
-							<td className="label">
-								<label htmlFor="randNum">验证码：</label>
-							</td>
-							<td>
-								<input id="randNum"
-									onChange={(evt)=> this.setState({randNum: evt.target.value})} />
-							</td>
-							<td>
-								<img src={`${config.energySystemURL}/randNum.action`} />
-							</td>
-						</tr>*/}
 					</tbody>
 				</table>
 
 				<div className="btn-wrapper">
 					<button onClick={this._onLoginBtnClick.bind(this)}>登录</button>
-					<button onClick={()=> location.reload()}>重置</button>
+					<button onClick={this._onResetBtnClick.bind(this)}>重置</button>
 				</div>
 			</div>
 		);

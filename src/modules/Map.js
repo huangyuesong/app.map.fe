@@ -28,45 +28,73 @@ export default class App extends Component {
             map.addControl(new AMap.Scale());
         });
 
-	    let infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+        let { sites, macRooms } = markers;
 
-	    for (let i = 0, marker; i < markers.length; ++i) {
-	        let marker = new AMap.Marker({
-	            position: markers[i].position,
-	            map: map,
+        new Promise((resolve, reject)=> {
+        	AMap.convertFrom(sites, 'gps', function (status, result) {
+	        	let { locations } = result;
+	        	let infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(5, -30)});
+
+			    for (let i = 0, marker; i < locations.length; ++i) {
+			        let marker = new AMap.Marker({
+			            position: [locations[i].lng, locations[i].lat],
+			            map: map,
+			            icon: new AMap.Icon({            
+				            size: new AMap.Size(30, 30),
+				            image: '/images/marker_black.png',
+				        }),
+			        });
+
+			        marker.content = `基站${i + 1}`;
+			        marker.on('click', (evt)=> {
+			        	infoWindow.setContent(evt.target.content);
+			        	infoWindow.open(map, evt.target.getPosition());
+			        });
+			    }
+
+			    return resolve();
 	        });
+        })
+        .then(()=> {
+        	AMap.convertFrom(macRooms, 'gps', function (status, result) {
+	        	let { locations } = result;
+	        	let infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
 
-	        marker.content = markers[i].info;
-	        marker.on('click', (e)=> {
-	        	infoWindow.setContent(e.target.content);
-	        	infoWindow.open(map, e.target.getPosition());
+			    for (let i = 0, marker; i < locations.length; ++i) {
+			        let marker = new AMap.Marker({
+			            position: [locations[i].lng, locations[i].lat],
+			            map: map,
+			        });
+
+			        marker.content = `机房${i + 1}`;
+			        marker.on('click', (evt)=> {
+			        	infoWindow.setContent(evt.target.content);
+			        	infoWindow.open(map, evt.target.getPosition());
+			        });
+			    }
+
+			    map.setFitView();
 	        });
-	        marker.emit('click', {target: marker});
-	    }
-
-	    map.setFitView();
+        });
 	}
 
 	componentDidMount () {
-		const PROTOCOL = 'http://';
-		const IP = config.IP;
-		const PORT = ':8081';
-		const PATH = '/api/get/marker';
+		let { cId } = this.props.location.query;
+		let { energySystemURL } = config;
 
-		fetch(`${PROTOCOL}${IP}${PORT}${PATH}`)
-			.then((res)=> {
-				this.setState({
-					loading: false,
-				});
-				return res.json();
-			})
-			.then((json)=> {
-				let markers = json.markers;
-				this._initMap(markers);
-			})
-			.catch((err)=> {
-				throw err;
+		fetch(`${energySystemURL}/siteLocation.action?cId=${cId}`)
+		.then((res)=> {
+			this.setState({
+				loading: false,
 			});
+			return res.json();
+		})
+		.then((json)=> {
+			this._initMap(json);
+		})
+		.catch((err)=> {
+			throw err;
+		});
 	}
 
   	render () {

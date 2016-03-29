@@ -10,7 +10,7 @@ import config from '../../config/index';
 
 import '../styles/Map.scss';
 
-export default class App extends Component {
+export default class Map extends Component {
 
 	constructor (props) {
 		super(props);
@@ -30,51 +30,69 @@ export default class App extends Component {
 
         let { sites, macRooms } = markers;
 
+        let siteLngLatArr = [];
+        sites.map((site)=> {
+        	siteLngLatArr.push([site.longitude, site.latitude]);
+        });
+
+        let macRoomLngLatArr = [];
+        macRooms.map((macRoom)=> {
+        	macRoomLngLatArr.push([macRoom.longitude, macRoom.latitude]);
+        });
+
         new Promise((resolve, reject)=> {
-        	AMap.convertFrom(sites, 'gps', function (status, result) {
-	        	let { locations } = result;
-	        	let infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(5, -30)});
+        	while (siteLngLatArr.length > 0) {
+	        	let tmp = siteLngLatArr.splice(0, 400);
 
-			    for (let i = 0, marker; i < locations.length; ++i) {
-			        let marker = new AMap.Marker({
-			            position: [locations[i].lng, locations[i].lat],
-			            map: map,
-			            icon: new AMap.Icon({            
-				            size: new AMap.Size(30, 30),
-				            image: '/images/marker_black.png',
-				        }),
-			        });
+	        	AMap.convertFrom(tmp, 'gps', (status, result)=> {
+	        		let { locations } = result;
+		     		let infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(5, -30)});
 
-			        marker.content = `基站${i + 1}`;
-			        marker.on('click', (evt)=> {
-			        	infoWindow.setContent(evt.target.content);
-			        	infoWindow.open(map, evt.target.getPosition());
-			        });
-			    }
+				    for (let i = 0, marker; i < locations.length; ++i) {
+				        let marker = new AMap.Marker({
+				            position: [locations[i].lng, locations[i].lat],
+				            map: map,
+				            icon: new AMap.Icon({            
+					            size: new AMap.Size(30, 30),
+					            image: '/images/marker_black.png',
+					        }),
+				        });
 
-			    return resolve();
-	        });
+				        marker.content = `基站${i + 1}`;
+				        marker.on('click', (evt)=> {
+				        	infoWindow.setContent(evt.target.content);
+				        	infoWindow.open(map, evt.target.getPosition());
+				        });
+				    }
+				    
+				    return resolve();
+		        });
+	        }
         })
         .then(()=> {
-        	AMap.convertFrom(macRooms, 'gps', function (status, result) {
-	        	let { locations } = result;
-	        	let infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+        	while (macRoomLngLatArr.length > 0) {
+	        	let tmp = macRoomLngLatArr.splice(0, 400);
 
-			    for (let i = 0, marker; i < locations.length; ++i) {
-			        let marker = new AMap.Marker({
-			            position: [locations[i].lng, locations[i].lat],
-			            map: map,
-			        });
+	        	AMap.convertFrom(tmp, 'gps', (status, result)=> {
+	        		let { locations } = result;
+		     		let infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
 
-			        marker.content = `机房${i + 1}`;
-			        marker.on('click', (evt)=> {
-			        	infoWindow.setContent(evt.target.content);
-			        	infoWindow.open(map, evt.target.getPosition());
-			        });
-			    }
+				    for (let i = 0, marker; i < locations.length; ++i) {
+				        let marker = new AMap.Marker({
+				            position: [locations[i].lng, locations[i].lat],
+				            map: map,
+				        });
 
-			    map.setFitView();
-	        });
+				        marker.content = `机房${i + 1}`;
+				        marker.on('click', (evt)=> {
+				        	infoWindow.setContent(evt.target.content);
+				        	infoWindow.open(map, evt.target.getPosition());
+				        });
+				    }
+
+				    map.setFitView();   	
+		        });
+	        }
         });
 	}
 
@@ -82,7 +100,7 @@ export default class App extends Component {
 		let { cId } = this.props.location.query;
 		let { energySystemURL } = config;
 
-		fetch(`${energySystemURL}/siteLocation.action?cId=${cId}`)
+		fetch(`${energySystemURL}/nodeLocation?cId=${cId}`)
 		.then((res)=> {
 			this.setState({
 				loading: false,
@@ -93,7 +111,7 @@ export default class App extends Component {
 			this._initMap(json);
 		})
 		.catch((err)=> {
-			throw err;
+			alert(err);
 		});
 	}
 

@@ -16,7 +16,8 @@ export default class Map extends Component {
 		super(props);
 
 		this.state = {
-			loading: true,
+			initLoading: true,
+			amapLoading: true,
 		};
 	}
 
@@ -53,7 +54,7 @@ export default class Map extends Component {
 				            position: [locations[i].lng, locations[i].lat],
 				            map: map,
 				            icon: new AMap.Icon({            
-					            size: new AMap.Size(30, 30),
+					            size: new AMap.Size(20, 30),
 					            image: '/images/marker_black.png',
 					        }),
 				        });
@@ -90,20 +91,33 @@ export default class Map extends Component {
 				        });
 				    }
 
-				    map.setFitView();   	
+				    map.setFitView();
+
+				    setTimeout(()=> {
+				    	this.setState({
+					    	amapLoading: false,
+					    });
+				    }, 10000);
 		        });
 	        }
         });
 	}
 
 	componentDidMount () {
-		let { cId } = this.props.location.query;
+		let { cId, companyLevel } = this.props.location.query;
 		let { energySystemURL } = config;
 
-		fetch(`${energySystemURL}/nodeLocation?cId=${cId}`)
+		let form = new FormData();
+		form.append('cId', JSON.stringify(cId.split(',').map(Number)));
+		form.append('companyLevel', companyLevel);
+
+		fetch(`${energySystemURL}/nodeLocation`, {
+			method: 'post',
+			body: form,
+		})
 		.then((res)=> {
 			this.setState({
-				loading: false,
+				initLoading: false,
 			});
 			return res.json();
 		})
@@ -116,20 +130,38 @@ export default class Map extends Component {
 	}
 
   	render () {
-		if (this.state.loading) {
+		if (this.state.initLoading) {
 			return (
 				<Loading />
 			);
 		} else {
-			return (
-				<div className="map-wrapper">
-					<div id="map"></div>
+			if (this.state.amapLoading) {
+				return (
+					<div className="map-wrapper">
+						<div id="map"></div>
 
-					<div className="back" onClick={(evt)=> browserHistory.goBack()}>
-						<p>{`<返回`}</p>
+						<div className="back" onClick={(evt)=> browserHistory.goBack()}>
+							<p>{`<返回`}</p>
+						</div>
+
+						<div className="amap-loading-wrapper">
+							<div className="amap-loading">
+								<p>地图玩命加载中...</p>
+							</div>
+						</div>
 					</div>
-				</div>
-			);
+				);
+			} else {
+				return (
+					<div className="map-wrapper">
+						<div id="map"></div>
+
+						<div className="back" onClick={(evt)=> browserHistory.goBack()}>
+							<p>{`<返回`}</p>
+						</div>
+					</div>
+				);
+			}
 		}
   	}
 }

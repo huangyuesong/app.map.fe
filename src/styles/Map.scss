@@ -23,3 +23,25 @@ body, html, #app, #map, .map-wrapper {
 		margin: 0;
 	}
 }
+
+.amap-loading-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.3);
+
+	.amap-loading {
+		margin: 0 auto;
+		margin-top: 50%;
+		position: relative;
+		max-width: 8rem;
+		height: 3rem;
+		background: white;
+		border: 0.1rem solid white;
+		border-radius: 0.5rem;
+		-moz-border-radius: 0.5rem;
+		padding: 0 3rem;
+	}
+}

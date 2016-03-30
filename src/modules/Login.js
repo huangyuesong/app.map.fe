@@ -20,7 +20,7 @@ export default class Login extends Component {
 	}
 
 	_onLoginBtnClick (evt) {
-		const url = `${config.energySystemURL}/mobileLoginIn.action`;
+		const url = `${config.energySystemURL}/mobileLoginIn`;
 		let form = new FormData();
 		form.append('username', this.state.username);
 		form.append('password', this.state.password);
@@ -34,8 +34,8 @@ export default class Login extends Component {
 		})
 		.then((json)=> {
 			if (json.success) {
-				let { cId } = json;
-				browserHistory.push(`/Map?cId=${cId}`);
+				let { cId, companyLevel } = json;
+				browserHistory.push(`/Map?cId=${cId}&companyLevel=${companyLevel}`);
 			} else {
 				alert(json.errors);
 			}

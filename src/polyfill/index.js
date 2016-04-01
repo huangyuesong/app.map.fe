@@ -1,3 +1,3 @@
-require('es6-promise').polyfill();
-import 'fetch-detector';
-import 'fetch-polyfill';
+import Promise from 'promise';
+
+window.Promise = Promise;

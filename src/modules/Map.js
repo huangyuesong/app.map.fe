@@ -43,7 +43,7 @@ export default class Map extends Component {
 
         new Promise((resolve, reject)=> {
         	while (siteLngLatArr.length > 0) {
-	        	let tmp = siteLngLatArr.splice(0, 400);
+	        	let tmp = siteLngLatArr.splice(0, 300);
 
 	        	AMap.convertFrom(tmp, 'gps', (status, result)=> {
 	        		let { locations } = result;
@@ -54,7 +54,7 @@ export default class Map extends Component {
 				            position: [locations[i].lng, locations[i].lat],
 				            map: map,
 				            icon: new AMap.Icon({            
-					            size: new AMap.Size(20, 30),
+					            size: new AMap.Size(30, 30),
 					            image: '/images/marker_black.png',
 					        }),
 				        });
@@ -66,13 +66,15 @@ export default class Map extends Component {
 				        });
 				    }
 				    
+				    map.setFitView();
+
 				    return resolve();
 		        });
 	        }
         })
         .then(()=> {
         	while (macRoomLngLatArr.length > 0) {
-	        	let tmp = macRoomLngLatArr.splice(0, 400);
+	        	let tmp = macRoomLngLatArr.splice(0, 300);
 
 	        	AMap.convertFrom(tmp, 'gps', (status, result)=> {
 	        		let { locations } = result;
@@ -97,7 +99,7 @@ export default class Map extends Component {
 				    	this.setState({
 					    	amapLoading: false,
 					    });
-				    }, 10000);
+				    }, 15000);
 		        });
 	        }
         });

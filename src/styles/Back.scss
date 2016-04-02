@@ -1,0 +1,19 @@
+.back {
+	display: inline-block;
+	height: 2rem;
+	width: 4rem;
+	background: white;
+	border: 0.1rem solid black;
+	border-radius: 0.5rem;
+	-moz-border-radius: 0.5rem;
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	text-align: center;
+	
+	p {
+		display: relative;
+		line-height: 2rem;
+		margin: 0;
+	}
+}

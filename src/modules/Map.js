@@ -2,9 +2,9 @@ import React, {
 	Component,
 } from 'react';
 
-import { browserHistory } from 'react-router';
-
 import Loading from './Loading';
+
+import Back from './Back';
 
 import config from '../../config/index';
 
@@ -18,7 +18,6 @@ export default class MapView extends Component {
 		super(props);
 
 		this.state = {
-			initLoading: false,
 			amapLoading: true,
 		};
 	}
@@ -86,14 +85,15 @@ export default class MapView extends Component {
 				        	infoWindow.setContent(evt.target.content);
 				        	infoWindow.open(map, evt.target.getPosition());
 				        });
-				        map.setCenter(marker.getPosition());
 				    }
 
 				    // map.setFitView();
 
-				    this.setState({
-				    	amapLoading: false,
-				    });
+					setTimeout(()=> {
+						this.setState({
+					    	amapLoading: false,
+					    });
+					}, 500);
 		        });
 	        }
         });
@@ -126,6 +126,7 @@ export default class MapView extends Component {
 			return res.json();
 		})
 		.then((json)=> {
+			this.markers = json;
 			this._filterMarker(json);
 		})
 		.catch((err)=> {
@@ -188,45 +189,28 @@ export default class MapView extends Component {
 				amapLoading: true,
 			});
 
-			this._fetchMarker(cId);
+			this._filterMarker(this.markers);
 		});
 
 		this._fetchMarker(cId);
 	}
 
   	render () {
-		if (this.state.initLoading) {
+		if (this.state.amapLoading) {
 			return (
-				<Loading />
+				<div className="map-wrapper">
+					<div id="map"></div>
+					<Loading />
+					<Back />
+				</div>
 			);
 		} else {
-			if (this.state.amapLoading) {
-				return (
-					<div className="map-wrapper">
-						<div id="map"></div>
-
-						<div className="back" onClick={(evt)=> browserHistory.goBack()}>
-							<p>{`<返回`}</p>
-						</div>
-
-						<div className="amap-loading-wrapper">
-							<div className="amap-loading">
-								<p>地图玩命加载中...</p>
-							</div>
-						</div>
-					</div>
-				);
-			} else {
-				return (
-					<div className="map-wrapper">
-						<div id="map"></div>
-
-						<div className="back" onClick={(evt)=> browserHistory.goBack()}>
-							<p>{`<返回`}</p>
-						</div>
-					</div>
-				);
-			}
+			return (
+				<div className="map-wrapper">
+					<div id="map"></div>
+					<Back />
+				</div>
+			);
 		}
   	}
 }

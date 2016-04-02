@@ -1,49 +1,25 @@
-html {
-	font-size: 10px;
+html, body {
+	height: 100%;
 }
-.init-loading {
-	margin: 0 auto;
-	width: 50px;
-}
-.init-loading-wrapper{
-	margin-top: 50%;
-	text-align: center;
-}
-.init-loading-text-wrapper{
-	margin-top: 10px;
-	color: rgba(255,255,255,0.4);
-}
-@-webkit-keyframes spinner-loader {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
+
+.amap-loading-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.3);
+
+	.amap-loading {
+		margin: 0 auto;
+		margin-top: 50%;
+		position: relative;
+		max-width: 8rem;
+		height: 3rem;
+		background: white;
+		border: 0.1rem solid white;
+		border-radius: 0.5rem;
+		-moz-border-radius: 0.5rem;
+		padding: 0 3rem;
 	}
-	100% {
-		-webkit-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
-}
-@keyframes spinner-loader {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-	100% {
-		-webkit-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
-}
-/* :not(:required) hides this rule from IE9 and below */
-.spinner-loader:not(:required) {
-	-webkit-animation: spinner-loader 1500ms infinite linear;
-	animation: spinner-loader 1500ms infinite linear;
-	border-radius: 1.2rem;
-	box-shadow: #06c1ae 1.5em 0 0 0, #06c1ae 1.1em 1.1em 0 0, #06c1ae 0 1.5em 0 0, #06c1ae -1.1em 1.1em 0 0, #06c1ae -1.5em 0 0 0, #06c1ae -1.1em -1.1em 0 0, #06c1ae 0 -1.5em 0 0, #06c1ae 1.1em -1.1em 0 0;
-	display: inline-block;
-	font-size: 1.2rem;
-	width: 1.2rem;
-	height: 1.2rem;
-	margin: 1.5em;
-	overflow: hidden;
-	text-indent: 100%;
 }

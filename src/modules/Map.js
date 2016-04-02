@@ -10,26 +10,21 @@ import config from '../../config/index';
 
 import '../styles/Map.scss';
 
-export default class Map extends Component {
+import gcj02towgs84 from '../utils/coordinate';
+
+export default class MapView extends Component {
 
 	constructor (props) {
 		super(props);
 
 		this.state = {
-			initLoading: true,
+			initLoading: false,
 			amapLoading: true,
 		};
 	}
 
-	_initMap (markers) {
-		let map = new AMap.Map('map');
-
-		map.plugin(["AMap.ToolBar", "AMap.Scale"], ()=> {
-            map.addControl(new AMap.ToolBar());
-            map.addControl(new AMap.Scale());
-        });
-
-        let { sites, macRooms } = markers;
+	_initMarker (markers, map) {
+		let { sites, macRooms } = markers;
 
         let siteLngLatArr = [];
         sites.map((site)=> {
@@ -66,7 +61,7 @@ export default class Map extends Component {
 				        });
 				    }
 				    
-				    map.setFitView();
+				    // map.setFitView();
 
 				    return resolve();
 		        });
@@ -91,44 +86,112 @@ export default class Map extends Component {
 				        	infoWindow.setContent(evt.target.content);
 				        	infoWindow.open(map, evt.target.getPosition());
 				        });
+				        map.setCenter(marker.getPosition());
 				    }
 
-				    map.setFitView();
+				    // map.setFitView();
 
-				    setTimeout(()=> {
-				    	this.setState({
-					    	amapLoading: false,
-					    });
-				    }, 15000);
+				    this.setState({
+				    	amapLoading: false,
+				    });
 		        });
 	        }
         });
 	}
 
-	componentDidMount () {
-		let { cId, companyLevel } = this.props.location.query;
+	_initMapWithCityName (cityName) {
+		let map = new AMap.Map('map');
+
+		map.plugin(["AMap.ToolBar", "AMap.Scale"], ()=> {
+            map.addControl(new AMap.ToolBar());
+            map.addControl(new AMap.Scale());
+        });
+
+        map.setCity(cityName);
+
+        return map;
+	}
+
+	_fetchMarker (cId) {
 		let { energySystemURL } = config;
 
 		let form = new FormData();
 		form.append('cId', JSON.stringify(cId.split(',').map(Number)));
-		form.append('companyLevel', companyLevel);
 
 		fetch(`${energySystemURL}/nodeLocation`, {
 			method: 'post',
 			body: form,
 		})
 		.then((res)=> {
-			this.setState({
-				initLoading: false,
-			});
 			return res.json();
 		})
 		.then((json)=> {
-			this._initMap(json);
+			this._filterMarker(json);
 		})
 		.catch((err)=> {
 			alert(err);
 		});
+	}
+
+	_filterMarker (markers) {
+		let DELTA = 1 / this.companyLevel;
+		let { lng, lat } = this.map.getCenter();
+		let { sites, macRooms } = markers;
+
+		// console.log([lng, lat]);
+		// console.log(gcj02towgs84(lng, lat))
+		// AMap.convertFrom(gcj02towgs84(lng, lat), 'gps', (status, result)=> {
+		// 	console.log(result.locations)
+		// });
+
+		sites = sites.filter((site)=> {
+			if (site.longitude < lng - DELTA
+				|| site.longitude > lng + DELTA
+				|| site.latitude < lat - DELTA
+				|| site.latitude > lat + DELTA) {
+				return false;
+			} else {
+				return true;
+			}
+		});
+
+		macRooms = macRooms.filter((macRoom)=> {
+			if (macRoom.longitude < lng - DELTA
+				|| macRoom.longitude > lng + DELTA
+				|| macRoom.latitude < lat - DELTA
+				|| macRoom.latitude > lat + DELTA) {
+				return false;
+			} else {
+				return true;
+			}
+		});
+
+		this._initMarker({
+			sites: sites,
+			macRooms: macRooms,
+		}, this.map);
+	}
+
+	componentDidMount () {
+		let { cId, companyLevel, dataPlace } = this.props.location.query;
+		this.companyLevel = companyLevel;
+
+		if (dataPlace === '移动') {
+			dataPlace = '北京';
+		}
+
+		let map = this.map = this._initMapWithCityName(dataPlace);
+
+		map.setZoom(companyLevel * 4);
+		map.on('dragend', ()=> {
+			this.setState({
+				amapLoading: true,
+			});
+
+			this._fetchMarker(cId);
+		});
+
+		this._fetchMarker(cId);
 	}
 
   	render () {

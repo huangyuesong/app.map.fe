@@ -13,11 +13,11 @@ import {
 import './src/polyfill/index';
 
 import Login from './src/modules/Login';
-import Map from './src/modules/Map';
+import MapView from './src/modules/Map';
 
 render((
   <Router history={browserHistory}>
     <Route path="/" component={Login}/>
-    <Route path="/Map" component={Map}/>
+    <Route path="/Map" component={MapView}/>
   </Router>
 ), document.getElementById('app'));

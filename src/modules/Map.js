@@ -135,8 +135,8 @@ export default class MapView extends Component {
 	}
 
 	_filterMarker (markers) {
-		let DELTA = 1 / this.companyLevel;
 		let { lng, lat } = this.map.getCenter();
+		let { northeast, southwest } = this.map.getBounds();
 		let { sites, macRooms } = markers;
 
 		// console.log([lng, lat]);
@@ -146,10 +146,10 @@ export default class MapView extends Component {
 		// });
 
 		sites = sites.filter((site)=> {
-			if (site.longitude < lng - DELTA
-				|| site.longitude > lng + DELTA
-				|| site.latitude < lat - DELTA
-				|| site.latitude > lat + DELTA) {
+			if (site.longitude < southwest.lng
+				|| site.longitude > northeast.lng
+				|| site.latitude < southwest.lat
+				|| site.latitude > northeast.lat) {
 				return false;
 			} else {
 				return true;
@@ -157,14 +157,22 @@ export default class MapView extends Component {
 		});
 
 		macRooms = macRooms.filter((macRoom)=> {
-			if (macRoom.longitude < lng - DELTA
-				|| macRoom.longitude > lng + DELTA
-				|| macRoom.latitude < lat - DELTA
-				|| macRoom.latitude > lat + DELTA) {
+			if (macRoom.longitude < southwest.lng
+				|| macRoom.longitude > northeast.lng
+				|| macRoom.latitude < southwest.lat
+				|| macRoom.latitude > northeast.lat) {
 				return false;
 			} else {
 				return true;
 			}
+		});
+
+		this.map.on('zoomend', ()=> {
+			this.setState({
+				amapLoading: true,
+			});
+
+			this._filterMarker(this.markers);
 		});
 
 		this._initMarker({
@@ -175,7 +183,6 @@ export default class MapView extends Component {
 
 	componentDidMount () {
 		let { cId, companyLevel, dataPlace } = this.props.location.query;
-		this.companyLevel = companyLevel;
 
 		if (dataPlace === '移动') {
 			dataPlace = '北京';

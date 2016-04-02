@@ -59,10 +59,10 @@ export default class MapView extends Component {
 				        	infoWindow.open(map, evt.target.getPosition());
 				        });
 				    }
-				    
-				    // map.setFitView();
 
-				    return resolve();
+				    if (siteLngLatArr.length === 0) {
+				    	return resolve();
+				    }
 		        });
 	        }
         })
@@ -87,13 +87,13 @@ export default class MapView extends Component {
 				        });
 				    }
 
-				    // map.setFitView();
-
-					setTimeout(()=> {
-						this.setState({
-					    	amapLoading: false,
-					    });
-					}, 500);
+				    if (macRoomLngLatArr.length === 0) {
+				    	setTimeout(()=> {
+							this.setState({
+						    	amapLoading: false,
+						    });
+						}, 500);
+				    }
 		        });
 	        }
         });
@@ -135,9 +135,13 @@ export default class MapView extends Component {
 	}
 
 	_filterMarker (markers) {
-		let { lng, lat } = this.map.getCenter();
+		const DISTANCE = 1.0;
 		let { northeast, southwest } = this.map.getBounds();
 		let { sites, macRooms } = markers;
+		let { lng, lat } = this.map.getCenter();
+		let lnglatArr = gcj02towgs84([lng, lat]);
+		lng = lnglatArr[0];
+		lat = lnglatArr[1];
 
 		// console.log([lng, lat]);
 		// console.log(gcj02towgs84(lng, lat))
@@ -146,10 +150,13 @@ export default class MapView extends Component {
 		// });
 
 		sites = sites.filter((site)=> {
+			let distance = Math.pow(Math.pow(lng - site.longitude, 2) + Math.pow(lat - site.latitude, 2), 0.5);
+			
 			if (site.longitude < southwest.lng
 				|| site.longitude > northeast.lng
 				|| site.latitude < southwest.lat
-				|| site.latitude > northeast.lat) {
+				|| site.latitude > northeast.lat
+				|| distance > DISTANCE) {
 				return false;
 			} else {
 				return true;
@@ -157,15 +164,21 @@ export default class MapView extends Component {
 		});
 
 		macRooms = macRooms.filter((macRoom)=> {
+			let distance = Math.pow(Math.pow(lng - macRooms.longitude, 2) + Math.pow(lat - macRooms.latitude, 2), 0.5);
+
 			if (macRoom.longitude < southwest.lng
 				|| macRoom.longitude > northeast.lng
 				|| macRoom.latitude < southwest.lat
-				|| macRoom.latitude > northeast.lat) {
+				|| macRoom.latitude > northeast.lat
+				|| distance > DISTANCE) {
 				return false;
 			} else {
 				return true;
 			}
 		});
+
+		this.filteredSites = sites;
+		this.filterMacRooms = macRooms;
 
 		this.map.on('zoomend', ()=> {
 			this.setState({

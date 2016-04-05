@@ -13,7 +13,7 @@ import {
 import './src/polyfill/index';
 
 import Login from './src/modules/Login';
-import MapView from './src/modules/Map';
+import MapView from './src/modules/MapView';
 
 render((
   <Router history={browserHistory}>

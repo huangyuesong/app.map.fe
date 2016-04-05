@@ -22,9 +22,16 @@ export default class MapView extends Component {
 		};
 	}
 
+	_errorHandler (err) {
+		alert(err);
+		location.reload();
+	}
+
 	_initMarker () {
 		let map = this.map;
 		let { sites, macRooms } = this;
+
+		map.clearMap();
 
 		sites.map((site)=> {
 			let { id } = site;
@@ -124,7 +131,7 @@ export default class MapView extends Component {
 			});
 		})
 		.catch((err)=> {
-			alert(err);
+			this._errorHandler(err);
 		});
 	}
 
@@ -227,6 +234,9 @@ export default class MapView extends Component {
 			map.setZoom(companyLevel * 3);
 
 			this._fetchMarker(cId);
+		})
+		.catch((err)=> {
+			this._errorHandler(err);
 		});
 	}
 

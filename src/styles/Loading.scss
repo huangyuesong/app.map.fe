@@ -21,5 +21,7 @@ html, body {
 		border-radius: 0.5rem;
 		-moz-border-radius: 0.5rem;
 		padding: 0 3rem;
+		box-shadow: 0 0.3rem 1.4rem rgba(0, 0, 100, 0.6);
+		z-index: 200;
 	}
 }

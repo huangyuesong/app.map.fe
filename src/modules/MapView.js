@@ -169,17 +169,40 @@ export default class MapView extends Component {
         		return resolve();
         	}
 
-        	for (let i = 0; i < siteConvertArr.length; ++i) {
-	        	AMap.convertFrom(siteConvertArr[i], 'gps', (status, result)=> {
-	        		let { locations } = result;
-		     		
-		     		siteLocations = siteLocations.concat(locations);
+        	let getPromise = (idx)=> {
+        		return new Promise((resolve, reject)=> {
+	        		AMap.convertFrom(siteConvertArr[idx], 'gps', (status, result)=> {
+	        			return resolve({
+	        				index: idx,
+	        				locations: result.locations,
+	        			});
+	        		});
+	        	})
+        	};
 
-				    if (i === siteConvertArr.length - 1) {
-				    	return resolve();
-				    }
-		        });
-	        }
+        	for (let i = 0; i < siteConvertArr.length; ++i) {
+        		getPromise(i)
+	        	.then((data)=> {
+	        		siteLocations = siteLocations.concat(data);
+
+	        		if (i === siteConvertArr.length - 1) {
+		        		siteLocations.sort((elm1, elm2)=> {
+		        			if (elm1.index < elm2.index) {
+		        				return -1;
+		        			} else if (elm1.index === elm2.index) {
+		        				return 0;
+		        			} else {
+		        				return 1;
+		        			}
+		        		});
+
+		        		return resolve();
+		        	}
+	        	})
+	        	.catch((err)=> {
+	        		this._errorHandler(err);
+	        	});
+        	}
         })
         .then(()=> {
 	        return new Promise((resolve, reject)=> {
@@ -187,37 +210,101 @@ export default class MapView extends Component {
 	        		return resolve();
 	        	}
 
+	        	let getPromise = (idx)=> {
+	        		return new Promise((resolve, reject)=> {
+		        		AMap.convertFrom(macRoomConvertArr[idx], 'gps', (status, result)=> {
+		        			return resolve({
+		        				index: idx,
+		        				locations: result.locations,
+		        			});
+		        		});
+		        	})
+	        	};
+
 	        	for (let i = 0; i < macRoomConvertArr.length; ++i) {
-	        		AMap.convertFrom(macRoomConvertArr[i], 'gps', (status, result)=> {
-		        		let { locations } = result;
+	        		getPromise(i)
+	        		.then((data)=> {
+	        			macRoomLocations = macRoomLocations.concat(data);
 
-		        		macRoomLocations = macRoomLocations.concat(locations);
+	        			if (i === macRoomConvertArr.length - 1) {
+	        				macRoomLocations.sort((elm1, elm2)=> {
+			        			if (elm1.index < elm2.index) {
+			        				return -1;
+			        			} else if (elm1.index === elm2.index) {
+			        				return 0;
+			        			} else {
+			        				return 1;
+			        			}
+			        		});
 
-					    if (i === macRoomConvertArr.length - 1) {
-					    	return resolve();
-					    }
-			        });
-		        }
+			        		return resolve();
+			        	}
+	        		})
+	        		.catch((err)=> {
+	        			this._errorHandler(err);
+	        		});
+	        	}
+	        });
+        })
+		.then(()=> {
+			return new Promise((resolve, reject)=> {
+				siteLocations = siteLocations.map((elm)=> {
+					return elm.locations;
+				});
+
+				macRoomLocations = macRoomLocations.map((elm)=> {
+					return elm.locations;
+				});
+
+				siteConvertArr = [];
+				macRoomConvertArr = [];
+
+				for (let i = 0; i < siteLocations.length; ++i) {
+					siteConvertArr = siteConvertArr.concat(siteLocations[i]);
+				}
+
+				for (let i = 0; i < macRoomLocations.length; ++i) {
+					macRoomConvertArr = macRoomConvertArr.concat(macRoomLocations[i]);
+				}
+
+				return resolve();
+			});
+		})
+        .then(()=> {
+	        return new Promise((resolve, reject)=> {
+	        	if (sites.length === 0) {
+	        		return resolve();
+	        	}
+
+	        	for (let i = 0; i < sites.length; ++i) {
+	        		let site = sites[i];
+	        		let location = siteConvertArr[i];
+
+	        		site.location = location;
+
+	        		if (i === sites.length - 1) {
+	        			return resolve();
+	        		}
+	        	}
 	        });
         })
         .then(()=> {
-	        return new Promise((resolve, reject)=> {
-	        	for (let i = 0; i < sites.length; ++i) {
-	        		let site = sites[i];
-	        		let location = siteLocations[i];
+        	return new Promise((resolve, reject)=> {
+        		if (macRooms.length === 0) {
+        			return resolve();
+        		}
 
-	        		site.location = location;
-	        	}
-
-	        	for (let i = 0; i < macRooms.length; ++i) {
+        		for (let i = 0; i < macRooms.length; ++i) {
 	        		let macRoom = macRooms[i];
-	        		let location = macRoomLocations[i];
+	        		let location = macRoomConvertArr[i];
 
 	        		macRoom.location = location;
-	        	}
 
-	        	return resolve();
-	        });
+	        		if (i === macRooms.length - 1) {
+	        			return resolve();
+	        		}
+	        	}
+        	});
         });
 	}
 

@@ -27,6 +27,60 @@ export default class MapView extends Component {
 		location.reload();
 	}
 
+	_fetchSiteKPI (siteId) {
+		this.setState({
+			amapLoading: true,
+		});
+
+		let { energySystemURL } = config;
+
+		return (
+			fetch(`${energySystemURL}/siteKPI?siteId=${siteId}`)
+			.then((res)=> {
+				return res.json();
+			})
+			.then((json)=> {
+				this.setState({
+					amapLoading: false,
+				});
+
+				return new Promise((resolve, reject)=> {
+					resolve(json.PowerExpend);
+				});
+			})
+			.catch((err)=> {
+				this._errorHandler(err);
+			})
+		);
+	}
+
+	_fetchMacRoomKPI (macRoomId) {
+		this.setState({
+			amapLoading: true,
+		});
+
+		let { energySystemURL } = config;
+
+		return (
+			fetch(`${energySystemURL}/macRoomKPI?macRoomId=${macRoomId}`)
+			.then((res)=> {
+				return res.json();
+			})
+			.then((json)=> {
+				this.setState({
+					amapLoading: false,
+				});
+				
+				return new Promise((resolve, reject)=> {
+					resolve(json.PowerExpend);
+				});
+			})
+			.catch((err)=> {
+				this._errorHandler(err);
+			})
+		);
+	}
+
 	_initMarker () {
 		let map = this.map;
 		let { sites, macRooms } = this;
@@ -48,11 +102,13 @@ export default class MapView extends Component {
 		        }),
 	        });
 
-	        marker.content = `基站${id}`;
-	        marker.on('click', (evt)=> {
-	        	infoWindow.setContent(evt.target.content);
-	        	infoWindow.open(map, evt.target.getPosition());
-	        });
+			marker.on('click', (evt)=> {
+				this._fetchSiteKPI(id)
+				.then((PowerExpend)=> {
+					infoWindow.setContent(`总能耗: ${PowerExpend}`);
+					infoWindow.open(map, evt.target.getPosition());
+				});
+			});
 		});
 
 		macRooms.map((macRoom)=> {
@@ -66,11 +122,13 @@ export default class MapView extends Component {
 	            map: map,
 	        });
 
-	        marker.content = `机房${id}`;
-	        marker.on('click', (evt)=> {
-	        	infoWindow.setContent(evt.target.content);
-	        	infoWindow.open(map, evt.target.getPosition());
-	        });
+			marker.on('click', (evt)=> {
+				this._fetchMacRoomKPI(id)
+				.then((PowerExpend)=> {
+					infoWindow.setContent(`总能耗: ${PowerExpend}`);
+					infoWindow.open(map, evt.target.getPosition());
+				});
+			});
 		});
 	}
 
@@ -318,8 +376,8 @@ export default class MapView extends Component {
 		this._initMapWithCityName(dataPlace, cId)
 		.then((map)=> {
 			this.map = map;
-			map.setZoom(companyLevel * 3);
 
+			map.setZoom(companyLevel * 3);
 			this._fetchMarker(cId);
 		})
 		.catch((err)=> {

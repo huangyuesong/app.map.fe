@@ -52,35 +52,37 @@ export default class Login extends Component {
 
 	render () {
 		return (
-			<div className="login-wrapper">
-				<h1>请登录</h1>
+			<div className="login-page">
+				<div className="login-wrapper">
+					<h1>请登录</h1>
 
-				<table className="login-tb">
-					<tbody>
-						<tr>
-							<td className="label">
-								<label htmlFor="username">用户名：</label>
-							</td>
-							<td>
-								<input id="username" ref="username"
-									onChange={(evt)=> this.setState({username: evt.target.value})} />
-							</td>
-						</tr>
-						<tr>
-							<td className="label">
-								<label htmlFor="password">密码：</label>
-							</td>
-							<td>
-								<input id="password" ref="password" type="password"
-									onChange={(evt)=> this.setState({password: evt.target.value})} />
-							</td>
-						</tr>
-					</tbody>
-				</table>
+					<table className="login-tb">
+						<tbody>
+							<tr>
+								<td className="label">
+									<label htmlFor="username">用户名：</label>
+								</td>
+								<td>
+									<input id="username" ref="username"
+										onChange={(evt)=> this.setState({username: evt.target.value})} />
+								</td>
+							</tr>
+							<tr>
+								<td className="label">
+									<label htmlFor="password">密码：</label>
+								</td>
+								<td>
+									<input id="password" ref="password" type="password"
+										onChange={(evt)=> this.setState({password: evt.target.value})} />
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
-				<div className="btn-wrapper">
-					<button onClick={this._onLoginBtnClick.bind(this)}>登录</button>
-					<button onClick={this._onResetBtnClick.bind(this)}>重置</button>
+					<div className="btn-wrapper">
+						<button onClick={this._onLoginBtnClick.bind(this)}>登录</button>
+						<button onClick={this._onResetBtnClick.bind(this)}>重置</button>
+					</div>
 				</div>
 			</div>
 		);

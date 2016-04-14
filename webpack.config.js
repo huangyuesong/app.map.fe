@@ -34,17 +34,11 @@ module.exports = {
             },
 
             {
-                test: /(\.ttf) | (\.svg)/,
-                loaders: [
-                    'file-loader',
-                ],
-            },
-
-            {
-                test: /\.woff/,
-                loaders: [
-                    'url?limit=10000&minetype=application/font-woff',
-                ],
+                test: /\.(otf|eot|svg|ttf|woff|woff2)\??.*$/,
+                loader: 'file-loader',
+                query: {
+                    name: 'font/[name].[hash].[ext]'
+                },
             },
         ],
     },

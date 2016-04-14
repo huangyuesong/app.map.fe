@@ -1,7 +1,7 @@
 .back {
 	display: inline-block;
-	height: 2rem;
-	width: 4rem;
+	height: 1.5rem;
+	padding: 0 .5rem;
 	background: white;
 	border: 0.1rem solid black;
 	border-radius: 0.5rem;
@@ -13,7 +13,8 @@
 	
 	p {
 		display: relative;
-		line-height: 2rem;
+		line-height: 1.5rem;
 		margin: 0;
+		font-size: .8rem;
 	}
 }

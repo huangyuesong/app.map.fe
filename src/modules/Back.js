@@ -11,7 +11,7 @@ export default class Back extends Component {
   	render () {
     	return (
     		<div className="back" onClick={(evt)=> browserHistory.goBack()}>
-				<p>{`<返回`}</p>
+				<p>{`<-返回`}</p>
 			</div>
     	);
   	}

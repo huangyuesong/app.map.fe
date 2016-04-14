@@ -2,12 +2,14 @@ import React, {
 	Component,
 } from 'react';
 
+import '../styles/Management.scss';
+
 import ListView from 'listview-react';
 
 import 'amazeui-touch/dist/amazeui.touch.min.css';
+
 import {
-  	Container,
-  	Tabs,
+	Tabs,
 } from 'amazeui-touch';
 
 export default class Management extends Component {
@@ -20,13 +22,27 @@ export default class Management extends Component {
 		};
 	}
 
+	_renderSiteList (item, idx) {
+		return (
+			<div>
+				
+			</div>
+		);
+	}
+
+	_renderMacRoomList (item, idx) {
+		return (
+			<div>
+				
+			</div>
+		);
+	}
+
 	render () {
 		return (
-			<Container>
-				<Tabs>
-
-				</Tabs>
-			</Container>
+			<div className="management-page">
+				
+			</div>
 		);
 	}
 }

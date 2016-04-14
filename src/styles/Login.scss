@@ -14,6 +14,10 @@ html, body {
 	display: inline-block;
 	width: 80%;
 	border: 0.3rem solid gray;
+
+	h1 {
+		color: white;
+	}
 }
 
 .login-tb {
@@ -21,6 +25,18 @@ html, body {
 
 	.label {
 		text-align: right;
+
+		label {
+			color: white;
+		}
+	}
+
+	input, input[type="password"] {
+		width: 10rem;
+		height: 1.5rem;
+		margin: 0;
+		padding: 0;
+		vertical-align: super;
 	}
 }
 
@@ -31,5 +47,6 @@ html, body {
 
 	button {
 		margin: 1rem 2rem;
+		color: white;
 	}
 }

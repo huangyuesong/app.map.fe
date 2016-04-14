@@ -4,6 +4,12 @@ import React, {
 
 import ListView from 'listview-react';
 
+import 'amazeui-touch/dist/amazeui.touch.min.css';
+import {
+  	Container,
+  	Tabs,
+} from 'amazeui-touch';
+
 export default class Management extends Component {
 
 	constructor (props) {
@@ -16,9 +22,11 @@ export default class Management extends Component {
 
 	render () {
 		return (
-			<div>
-				
-			</div>
+			<Container>
+				<Tabs>
+
+				</Tabs>
+			</Container>
 		);
 	}
 }

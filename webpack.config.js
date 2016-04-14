@@ -20,7 +20,7 @@ module.exports = {
                 test: /\.css$/,
                 loaders: [
                     'style-loader',
-                    'css-loader'
+                    'css-loader',
                 ],
             },
 
@@ -30,6 +30,20 @@ module.exports = {
                     'style-loader',
                     'css-loader',
                     'sass-loader',
+                ],
+            },
+
+            {
+                test: /(\.ttf) | (\.svg)/,
+                loaders: [
+                    'file-loader',
+                ],
+            },
+
+            {
+                test: /\.woff/,
+                loaders: [
+                    'url?limit=10000&minetype=application/font-woff',
                 ],
             },
         ],

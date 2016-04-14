@@ -8,7 +8,7 @@ import Back from './Back';
 
 import config from '../../config/index';
 
-import '../styles/Map.scss';
+import '../styles/MapView.scss';
 
 import gcj02towgs84 from '../utils/coordinate';
 

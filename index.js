@@ -14,10 +14,12 @@ import './src/polyfill/index';
 
 import Login from './src/modules/Login';
 import MapView from './src/modules/MapView';
+import Management from './src/modules/Management';
 
 render((
-  <Router history={browserHistory}>
-    <Route path="/" component={Login}/>
-    <Route path="/Map" component={MapView}/>
-  </Router>
+  	<Router history={browserHistory}>
+  		<Route path="/" component={Login} />
+  		<Route path="/Map" component={MapView} />
+  		<Route path='/Management' component={Management} />
+  	</Router>
 ), document.getElementById('app'));

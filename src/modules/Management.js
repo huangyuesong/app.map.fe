@@ -18,7 +18,14 @@ export default class Management extends Component {
 		this.state = {
 			loading: true,
 			seletedTab: 0,
+			pageSize: 10,
+			pageIndex: 1,
+			listData: [],
 		};
+	}
+
+	_errorHandler (err) {
+		alert(err);
 	}
 
 	_renderSiteList (item, idx) {
@@ -45,57 +52,71 @@ export default class Management extends Component {
 		);
 	}
 
-	_fetchSiteAndMacRoom () {
-		// let { energySystemURL } = config;
+	_fetchSite () {
+		let { energySystemURL } = config;
+		let { pageSize, pageIndex } = this.state;
 
-		// return (
-			// fetch(`${energySystemURL}/getSiteInfo_SiteManagementAction`)
-			// .then((res)=> {
-			// 	return res.json();
-			// })
-			// .then((json)=> {
-			// 	return new Promise((resolve, reject)=> {
-			// 		resolve(json);
-			// 	});
-			// })
-			// .catch((err)=> {
-			// 	this._errorHandler(err);
-			// });
-		// );
-		let sites = [];
-		let macRooms = [];
+		fetch(`${energySystemURL}/getSiteInfo_SiteManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+		.then((res)=> {
+			return res.json();
+		})
+		.then((data)=> {
+			this.setState({
+				loading: false,
+				listData: this.state.listData.concat(data.sites),
+				pageIndex: this.state.pageIndex + 1,
+			});
+		})
+		.catch((err)=> {
+			this._errorHandler(err);
+		});
+	}
 
-		for (let i = 0; i < 4000; ++i) {
-			sites.push({"area":18.9,"carrierCount":413,"city":"河北石家庄长安区","id":163130,"identityNo":"HB10000580","isFlag":0,"latitude":91.6215,"longitude":52.1477,"name":"基站#580","powerId":183,"powerPrice":0.68,"typeId":216,"useDate":"2011-12-16 00:00:00","wallInfo":"钢铁水泥"});
-		}
+	_fetchMacRoom () {
+		let { energySystemURL } = config;
+		let { pageSize, pageIndex } = this.state;
 
-		for (let i = 0; i < 1000; ++i) {
-			macRooms.push({"area":18.9,"carrierCount":413,"city":"河北石家庄长安区","id":163130,"identityNo":"HB10000580","isFlag":0,"latitude":91.6215,"longitude":52.1477,"name":"基站#580","powerId":183,"powerPrice":0.68,"typeId":216,"useDate":"2011-12-16 00:00:00","wallInfo":"钢铁水泥"});
-		}
-		return new Promise((resolve, reject)=> {
-			setTimeout(()=> {
-				resolve({
-					sites: sites,
-					macRooms: macRooms,
-				});
-			}, 2000);
+		fetch(`${energySystemURL}/getMacRoomInfo_SiteManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+		.then((res)=> {
+			return res.json();
+		})
+		.then((data)=> {
+			this.setState({
+				loading: false,
+				listData: this.state.listData.concat(data.macRooms),
+				pageIndex: this.state.pageIndex + 1,
+			});
+		})
+		.catch((err)=> {
+			this._errorHandler(err);
 		});
 	}
 
 	componentDidMount () {
-		this._fetchSiteAndMacRoom()
-		.then((data)=> {
+		this._fetchSite();
+	}
+
+	componentWillUpdate (nextProps, nextState) {
+		if (this.state.seletedTab === 0 && nextState.seletedTab === 1) {
 			this.setState({
-				loading: false,
-				sites: data.sites,
-				macRooms: data.macRooms,
+				listData: [],
+				pageIndex: 1,
 			});
-		});
+
+			this._fetchMacRoom();
+		} else if (this.state.seletedTab === 1 && nextState.seletedTab === 0) {
+			this.setState({
+				listData: [],
+				pageIndex: 1,
+			});
+
+			this._fetchSite();
+		}
 	}
 
 	render () {
 		let listviewStyle = {
-			height: window.innerHeight - 40,
+			height: window.innerHeight - 60,
 		};
 
 		return (
@@ -110,15 +131,19 @@ export default class Management extends Component {
 							return (
 								<ListView
 									style={listviewStyle}
-									data={this.state.sites || []}
-									renderItem={this._renderSiteList.bind(this)} />
+									data={this.state.listData}
+									renderItem={this._renderSiteList.bind(this)}
+									enableOnEndReachedEvent={true}
+									onEndReached={this._fetchSite.bind(this)} />
 							);
 						} else if (this.state.seletedTab === 1) {
 							return (
 								<ListView
 									style={listviewStyle}
-									data={this.state.macRooms || []}
-									renderItem={this._renderMacRoomList.bind(this)} />
+									data={this.state.listData}
+									renderItem={this._renderMacRoomList.bind(this)}
+									enableOnEndReachedEvent={true}
+									onEndReached={this._fetchMacRoom.bind(this)} />
 							);
 						}
 					}

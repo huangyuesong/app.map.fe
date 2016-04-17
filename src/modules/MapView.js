@@ -24,7 +24,6 @@ export default class MapView extends Component {
 
 	_errorHandler (err) {
 		alert(err);
-		location.reload();
 	}
 
 	_fetchSiteKPI (siteId) {

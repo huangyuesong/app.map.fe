@@ -19,6 +19,10 @@ export default class Login extends Component {
 		};
 	}
 
+	_errorHandler (err) {
+		alert(err);
+	}
+
 	_onLoginBtnClick (evt) {
 		const url = `${config.energySystemURL}/mobileLoginIn`;
 		let form = new FormData();
@@ -35,13 +39,14 @@ export default class Login extends Component {
 		.then((json)=> {
 			if (json.success) {
 				let { cId, companyLevel, dataPlace } = json;
+
 				browserHistory.push(`/Map?cId=${cId}&companyLevel=${companyLevel}&dataPlace=${dataPlace}`);
 			} else {
-				alert(json.errors);
+				this._errorHandler(json.errors);
 			}
 		})
 		.catch((err)=> {
-			alert(err);
+			this._errorHandler(err);
 		});
 	}
 

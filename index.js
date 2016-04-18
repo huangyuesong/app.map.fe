@@ -12,6 +12,8 @@ import {
 
 import './src/polyfill/index';
 
+import './src/styles/_normalize.scss';
+
 import Login from './src/modules/Login';
 import MapView from './src/modules/MapView';
 import Management from './src/modules/Management';

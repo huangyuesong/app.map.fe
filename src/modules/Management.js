@@ -10,6 +10,8 @@ import Tab from './Tab';
 
 import ListView from 'listview-react';
 
+const pageSize = 10;
+
 export default class Management extends Component {
 
 	constructor (props) {
@@ -18,9 +20,9 @@ export default class Management extends Component {
 		this.state = {
 			loading: true,
 			seletedTab: 0,
-			pageSize: 10,
 			pageIndex: 1,
 			listData: [],
+			fetchMoreData: true,
 		};
 	}
 
@@ -53,18 +55,28 @@ export default class Management extends Component {
 	}
 
 	_fetchSite () {
+		if (!this.state.fetchMoreData) {
+			return;
+		}
+
 		this.setState({
 			loading: true,
 		});
 
 		let { energySystemURL } = config;
-		let { pageSize, pageIndex } = this.state;
+		let { pageIndex } = this.state;
 
 		fetch(`${energySystemURL}/getSiteInfo_SiteManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
 		.then((res)=> {
 			return res.json();
 		})
 		.then((data)=> {
+			if (data.sites.length < pageSize) {
+				this.setState({
+					fetchMoreData: false,
+				});
+			}
+
 			setTimeout(()=> {
 				this.setState({
 					loading: false,
@@ -79,18 +91,28 @@ export default class Management extends Component {
 	}
 
 	_fetchMacRoom () {
+		if (!this.state.fetchMoreData) {
+			return;
+		}
+
 		this.setState({
 			loading: true,
 		});
 
 		let { energySystemURL } = config;
-		let { pageSize, pageIndex } = this.state;
+		let { pageIndex } = this.state;
 
 		fetch(`${energySystemURL}/getMacRoomInfo_SiteManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
 		.then((res)=> {
 			return res.json();
 		})
 		.then((data)=> {
+			if (data.macRooms.length < pageSize) {
+				this.setState({
+					fetchMoreData: false,
+				});
+			}
+			
 			setTimeout(()=> {
 				this.setState({
 					loading: false,

@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 
 module.exports = {
-    entry: './index.js',
+    entry: './src/index.js',
 
     output: {
         path: 'public',
@@ -13,7 +13,10 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader?presets[]=es2015&presets[]=react',
+                loader: 'babel-loader',
+                query: {
+                    presets: ['es2015', 'react'],
+                },
             },
 
             {
@@ -37,7 +40,7 @@ module.exports = {
                 test: /\.(otf|eot|svg|ttf|woff|woff2)\??.*$/,
                 loader: 'file-loader',
                 query: {
-                    name: 'font/[name].[hash].[ext]'
+                    name: 'font/[name].[hash].[ext]',
                 },
             },
         ],
@@ -45,7 +48,7 @@ module.exports = {
 
     plugins: [
         new webpack.ProvidePlugin({
-            'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+            'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch',
         }),
     ],
 };

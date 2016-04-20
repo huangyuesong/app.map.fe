@@ -10,13 +10,13 @@ import {
 	browserHistory,
 } from 'react-router';
 
-import './src/polyfill/index';
+import './polyfill/index';
 
-import './src/styles/_normalize.scss';
+import './styles/_normalize.scss';
 
-import Login from './src/modules/Login';
-import MapView from './src/modules/MapView';
-import Management from './src/modules/Management';
+import Login from './modules/Login';
+import MapView from './modules/MapView';
+import Management from './modules/Management';
 
 render((
   	<Router history={browserHistory}>

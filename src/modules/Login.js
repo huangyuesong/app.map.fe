@@ -40,7 +40,11 @@ export default class Login extends Component {
 			if (json.success) {
 				let { cId, companyLevel, dataPlace } = json;
 
-				browserHistory.push(`/Map?cId=${cId}&companyLevel=${companyLevel}&dataPlace=${dataPlace}`);
+				window.localStorage.cId = cId;
+				window.localStorage.companyLevel = companyLevel;
+				window.localStorage.dataPlace = dataPlace;
+
+				browserHistory.push(`/Map`);
 			} else {
 				this._errorHandler(json.errors);
 			}

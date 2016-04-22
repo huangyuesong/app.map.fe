@@ -366,7 +366,7 @@ export default class MapView extends Component {
 	}
 
 	componentDidMount () {
-		let { cId, companyLevel, dataPlace } = this.props.location.query;
+		let { cId, companyLevel, dataPlace } = window.localStorage;
 
 		if (dataPlace === '移动') {
 			dataPlace = '北京';

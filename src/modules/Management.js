@@ -10,6 +10,8 @@ import Tab from './Tab';
 
 import ListView from 'listview-react';
 
+import Back from './Back';
+
 const pageSize = 10;
 
 export default class Management extends Component {
@@ -66,7 +68,7 @@ export default class Management extends Component {
 		let { energySystemURL } = config;
 		let { pageIndex } = this.state;
 
-		fetch(`${energySystemURL}/getSiteInfo_SiteManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+		fetch(`${energySystemURL}/getSiteInfo_MobileManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
 		.then((res)=> {
 			return res.json();
 		})
@@ -102,7 +104,7 @@ export default class Management extends Component {
 		let { energySystemURL } = config;
 		let { pageIndex } = this.state;
 
-		fetch(`${energySystemURL}/getMacRoomInfo_SiteManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+		fetch(`${energySystemURL}/getMacRoomInfo_MobileManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
 		.then((res)=> {
 			return res.json();
 		})
@@ -164,6 +166,7 @@ export default class Management extends Component {
 		return (
 			<div className="management-page">
 				<Tab onSelect={(idx)=> this.setState({seletedTab: idx})} />
+				<Back />
 
 				{(()=> {
 					if (this.state.seletedTab === 0) {

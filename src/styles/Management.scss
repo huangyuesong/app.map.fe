@@ -25,4 +25,11 @@
     .list-view-content-inner-wrapper {
         z-index: 20;
     }
+
+    .back {
+        z-index: 40;
+        top: .5rem;
+        left: .2rem;
+        position: fixed;
+    }
 }

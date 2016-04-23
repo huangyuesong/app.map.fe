@@ -48,5 +48,11 @@ html, body {
 	button {
 		margin: 1rem 2rem;
 		color: black;
+		padding: .5rem 1rem;
+		background: white;
+		border: .1rem solid white;
+		border-radius: .5rem;
+		-webkit-border-radius: .5rem;
+		-moz-border-radius: .5rem;
 	}
 }

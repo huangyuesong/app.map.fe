@@ -12,6 +12,8 @@ import ListView from 'listview-react';
 
 import Back from './Back';
 
+import Search from './Search';
+
 const pageSize = 10;
 
 export default class Management extends Component {
@@ -68,7 +70,7 @@ export default class Management extends Component {
 		let { energySystemURL } = config;
 		let { pageIndex } = this.state;
 
-		fetch(`${energySystemURL}/getSiteInfo_MobileManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+		fetch(`${energySystemURL}/searchSite?pageSize=${pageSize}&pageIndex=${pageIndex}`)
 		.then((res)=> {
 			return res.json();
 		})
@@ -104,7 +106,7 @@ export default class Management extends Component {
 		let { energySystemURL } = config;
 		let { pageIndex } = this.state;
 
-		fetch(`${energySystemURL}/getMacRoomInfo_MobileManagementAction?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+		fetch(`${energySystemURL}/searchMacRoom?pageSize=${pageSize}&pageIndex=${pageIndex}`)
 		.then((res)=> {
 			return res.json();
 		})
@@ -165,8 +167,13 @@ export default class Management extends Component {
 
 		return (
 			<div className="management-page">
-				<Tab onSelect={(idx)=> this.setState({seletedTab: idx})} />
-				<Back />
+				<div className="fixed-wrapper">
+					<Tab onSelect={(idx)=> this.setState({seletedTab: idx})} />
+					<Back />
+					<Search 
+						target={this.state.seletedTab === 0 ? '基站' : '机房'}
+						onSearch={(keyword)=> console.log(keyword)} />
+				</div>
 
 				{(()=> {
 					if (this.state.seletedTab === 0) {

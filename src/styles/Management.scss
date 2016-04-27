@@ -18,7 +18,7 @@
     }
 
     .react-listview-wrapper {
-        top: 4rem;
+        top: 4.5rem;
         z-index: 20;
     }
 
@@ -26,10 +26,32 @@
         z-index: 20;
     }
 
-    .back {
-        z-index: 40;
-        top: .5rem;
-        left: .2rem;
+    .fixed-wrapper {
         position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 30;
+
+        .back {
+            z-index: 40;
+            top: -2.5rem;
+            left: .2rem;
+            position: relative;
+        }
+
+        .search-wrapper {
+            position: relative;
+            z-index: 30;
+            top: -1.8rem;
+
+            input {
+
+            }
+
+            span {
+
+            }
+        }
     }
 }

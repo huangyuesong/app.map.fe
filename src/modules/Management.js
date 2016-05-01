@@ -27,6 +27,10 @@ export default class Management extends Component {
 			pageIndex: 1,
 			listData: [],
 			fetchMoreData: true,
+			keyword: '',
+			province: '',
+			city: '',
+			county: '',
 		};
 	}
 
@@ -37,7 +41,7 @@ export default class Management extends Component {
 	_renderSiteList (item, idx) {
 		return (
 			<div key={idx} className="site-info-row-wrapper">
-				<p>{`基站${idx + 1}`}</p>
+				<p>{item.name}</p>
 
 				<p>{item.longitude}</p>
 
@@ -49,7 +53,7 @@ export default class Management extends Component {
 	_renderMacRoomList (item, idx) {
 		return (
 			<div key={idx} className="mac-room-info-row-wrapper">
-				<p>{`机房${idx + 1}`}</p>
+				<p>{item.name}</p>
 
 				<p>{item.longitude}</p>
 
@@ -68,9 +72,21 @@ export default class Management extends Component {
 		});
 
 		let { energySystemURL } = config;
-		let { pageIndex } = this.state;
+		let { pageIndex, keyword, province, city, county } = this.state;
 
-		fetch(`${energySystemURL}/searchSite?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+		let form = new FormData();
+
+		form.append('pageIndex', pageIndex);
+		form.append('pageSize', pageSize);
+		form.append('keyword', keyword);
+		form.append('province', province);
+		form.append('city', city);
+		form.append('county', county);
+
+		fetch(`${energySystemURL}/searchSite`, {
+			method: 'post',
+			body: form,
+		})
 		.then((res)=> {
 			return res.json();
 		})
@@ -104,9 +120,21 @@ export default class Management extends Component {
 		});
 
 		let { energySystemURL } = config;
-		let { pageIndex } = this.state;
+		let { pageIndex, keyword, province, city, county } = this.state;
 
-		fetch(`${energySystemURL}/searchMacRoom?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+		let form = new FormData();
+
+		form.append('pageIndex', pageIndex);
+		form.append('pageSize', pageSize);
+		form.append('keyword', keyword);
+		form.append('province', province);
+		form.append('city', city);
+		form.append('county', county);
+
+		fetch(`${energySystemURL}/searchMacRoom`, {
+			method: 'post',
+			body: form,
+		})
 		.then((res)=> {
 			return res.json();
 		})
@@ -130,6 +158,22 @@ export default class Management extends Component {
 		});
 	}
 
+	_fetchDistrictList () {
+		let { energySystemURL } = config;
+		let { pageIndex } = this.state;
+
+		fetch(`${energySystemURL}/getDistrictList`)
+		.then((res)=> {
+			return res.json();
+		})
+		.then((data)=> {
+			this.districtList = data.districts;
+		})
+		.catch((err)=> {
+			this._errorHandler(err);
+		});
+	}
+
 	_renderLoading () {
 		if (this.state.loading) {
 			return <ListView.Loading className="loading" />;
@@ -138,7 +182,23 @@ export default class Management extends Component {
 		return null;
 	}
 
+	_onSearch (keyword) {
+		this.setState({
+			keyword: keyword,
+			listData: [],
+			pageIndex: 1,
+			fetchMoreData: true,
+		}, ()=> {
+			if (this.state.seletedTab === 1) {
+				this._fetchMacRoom();
+			} else if (this.state.seletedTab === 0) {
+				this._fetchSite();
+			}
+		});
+	}
+
 	componentDidMount () {
+		this._fetchDistrictList();
 		this._fetchSite();
 	}
 
@@ -147,16 +207,12 @@ export default class Management extends Component {
 			this.setState({
 				listData: [],
 				pageIndex: 1,
-			});
-
-			this._fetchMacRoom();
+			}, ()=> this._fetchMacRoom());
 		} else if (this.state.seletedTab === 1 && nextState.seletedTab === 0) {
 			this.setState({
 				listData: [],
 				pageIndex: 1,
-			});
-
-			this._fetchSite();
+			}, ()=> this._fetchSite());
 		}
 	}
 
@@ -172,7 +228,7 @@ export default class Management extends Component {
 					<Back />
 					<Search 
 						target={this.state.seletedTab === 0 ? '基站' : '机房'}
-						onSearch={(keyword)=> console.log(keyword)} />
+						onSearch={this._onSearch.bind(this)} />
 				</div>
 
 				{(()=> {

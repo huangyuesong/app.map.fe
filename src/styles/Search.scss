@@ -8,12 +8,10 @@
 		box-sizing: border-box;
 	}
 
-	span {
-		display: inline-block;
-		width: 3rem;
-		height: 2rem;
-		line-height: 2rem;
-		margin: 0 1rem;
-		text-align: center;
+	button {
+		height: 1.8rem;
+		background: rgba(0, 0, 0, 0.1);
+		border: .1rem solid rgba(0, 0, 0, 0.3);
+		outline: 0;
 	}
 }

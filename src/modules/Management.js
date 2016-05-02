@@ -31,6 +31,7 @@ export default class Management extends Component {
 			province: '',
 			city: '',
 			county: '',
+			needManualyLoading: false,
 		};
 	}
 
@@ -106,7 +107,11 @@ export default class Management extends Component {
 			}, 500);
 		})
 		.catch((err)=> {
-			this._errorHandler(err);
+			this.setState({
+				needManualyLoading: true,
+			}, ()=> {
+				this._errorHandler(err);
+			});
 		});
 	}
 
@@ -154,7 +159,11 @@ export default class Management extends Component {
 			}, 500);
 		})
 		.catch((err)=> {
-			this._errorHandler(err);
+			this.setState({
+				needManualyLoading: true,
+			}, ()=> {
+				this._errorHandler(err);
+			});
 		});
 	}
 
@@ -179,7 +188,23 @@ export default class Management extends Component {
 			return <ListView.Loading className="loading" />;
 		}
 
+		if (this.state.needManualyLoading) {
+			return <button className="load-manualy" onClick={this._manualyLoad.bind(this)}>点击加载更多</button>;
+		}
+
 		return null;
+	}
+
+	_manualyLoad () {
+		this.setState({
+			needManualyLoading: false,
+		}, ()=> {
+			if (this.state.seletedTab === 1) {
+				this._fetchMacRoom();
+			} else if (this.state.seletedTab === 0) {
+				this._fetchSite();
+			}
+		});
 	}
 
 	_onSearch (keyword) {
@@ -241,7 +266,8 @@ export default class Management extends Component {
 								enableOnEndReachedEvent={true}
 								onEndReached={this._fetchSite.bind(this)}
 								renderPullUI={this._renderLoading.bind(this)}
-								renderFooter={this._renderLoading.bind(this)} />
+								renderFooter={this._renderLoading.bind(this)}
+								onEndReachedThreshol={150} />
 						);
 					} else if (this.state.seletedTab === 1) {
 						return (
@@ -252,7 +278,8 @@ export default class Management extends Component {
 								enableOnEndReachedEvent={true}
 								onEndReached={this._fetchMacRoom.bind(this)}
 								renderPullUI={this._renderLoading.bind(this)}
-								renderFooter={this._renderLoading.bind(this)} />
+								renderFooter={this._renderLoading.bind(this)}
+								onEndReachedThreshol={150} />
 						);
 					}
 				})()}

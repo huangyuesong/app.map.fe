@@ -16,7 +16,7 @@ export default class Search extends Component {
         return (
           <div className="search-wrapper">
               <input ref={(view)=> this.keyword = view} type="text" placeholder={`输入${target}名称进行搜索`} />
-              <span onClick={this._onSearchClick.bind(this)}>搜索</span>
+              <button onClick={this._onSearchClick.bind(this)}>搜索</button>
           </div>
         );
   	}

@@ -1,0 +1,14 @@
+.district-select-wrapper {
+	display: flex;
+
+	select {
+		width: 5rem;
+        height: 2rem;
+        font-size: 1rem;
+        box-sizing: border-box;
+        border: .1rem solid rgba(0, 0, 0, 0.3);
+        border-radius: 0;
+
+        flex: 1;
+    }	
+}

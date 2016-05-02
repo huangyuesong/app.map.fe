@@ -1,17 +1,21 @@
 .search-wrapper {
-	padding: .2rem 0;
+	display: flex;
 	
 	input {
 		border: .1rem solid rgba(0, 0, 0, 0.3);
 		font-size: .9rem;
 		height: 2rem;
 		box-sizing: border-box;
+
+		flex: 6;
 	}
 
 	button {
-		height: 1.8rem;
+		height: 1.9rem;
 		background: rgba(0, 0, 0, 0.1);
 		border: .1rem solid rgba(0, 0, 0, 0.3);
 		outline: 0;
+
+		flex: 1;
 	}
 }

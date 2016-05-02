@@ -18,7 +18,7 @@
     }
 
     .react-listview-wrapper {
-        top: 5.2rem;
+        top: 7rem;
         z-index: 20;
     }
 
@@ -44,19 +44,25 @@
 
         .back {
             z-index: 40;
-            top: -2.5rem;
-            left: .2rem;
-            position: relative;
+            top: .5rem;
+            left: .3rem;
+            position: absolute;
+        }
+
+        .district-select-wrapper {
+            text-align: center;
+
+            select {
+                width: 33%;
+            }
         }
 
         .search-wrapper {
-            // position: relative;
             z-index: 30;
-            top: -1.8rem;
-            float: right;
+            text-align: center;
 
             input {
-                width: 10rem;
+                width: 23rem;
             }
 
             span {

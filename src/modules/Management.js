@@ -6,13 +6,11 @@ import config from '../../config/index';
 
 import '../styles/Management.scss';
 
-import Tab from './Tab';
-
 import ListView from 'listview-react';
-
+import Tab from './Tab';
 import Back from './Back';
-
 import Search from './Search';
+import DistrictSelect from './DistrictSelect';
 
 const pageSize = 10;
 
@@ -171,12 +169,31 @@ export default class Management extends Component {
 		let { energySystemURL } = config;
 		let { pageIndex } = this.state;
 
-		fetch(`${energySystemURL}/getDistrictList`)
+		return fetch(`${energySystemURL}/getDistrictList`)
 		.then((res)=> {
 			return res.json();
 		})
 		.then((data)=> {
-			this.districtList = data.districts;
+			return new Promise((resolve, reject)=> {
+				let { districts } = data;
+				let _districts = {};
+
+				districts.map((district)=> {
+					let { province, city, county } = district;
+
+					if (_districts[province] === undefined) {
+						_districts[province] = {};
+					}
+
+					if (_districts[province][city] === undefined) {
+						_districts[province][city] = [];
+					} else {
+						_districts[province][city].push(county);
+					}
+				});
+
+				resolve(_districts);
+			});
 		})
 		.catch((err)=> {
 			this._errorHandler(err);
@@ -222,9 +239,34 @@ export default class Management extends Component {
 		});
 	}
 
+	_onDistrictSelect (district) {
+		let { province, city, county } = district;
+
+		this.setState({
+			province: province,
+			city: city,
+			county: county,
+			listData: [],
+			pageIndex: 1,
+			fetchMoreData: true,
+		}, ()=> {
+			if (this.state.seletedTab === 1) {
+				this._fetchMacRoom();
+			} else if (this.state.seletedTab === 0) {
+				this._fetchSite();
+			}
+		});
+	}
+
 	componentDidMount () {
-		this._fetchDistrictList();
-		this._fetchSite();
+		this.setState({
+			loading: true,
+		});
+
+		this._fetchDistrictList().then((districts)=> {
+			this.districts = districts;
+			this._fetchSite();
+		});
 	}
 
 	componentWillUpdate (nextProps, nextState) {
@@ -250,10 +292,13 @@ export default class Management extends Component {
 			<div className="management-page">
 				<div className="fixed-wrapper">
 					<Tab onSelect={(idx)=> this.setState({seletedTab: idx})} />
-					<Back />
+					<DistrictSelect 
+						districts={this.districts}
+						onSelect={this._onDistrictSelect.bind(this)} />
 					<Search 
 						target={this.state.seletedTab === 0 ? '基站' : '机房'}
 						onSearch={this._onSearch.bind(this)} />
+					<Back />
 				</div>
 
 				{(()=> {

@@ -217,6 +217,7 @@ export default class Management extends Component {
 				<Search 
 					target={this.state.seletedTab === 0 ? '基站' : '机房'}
 					onSearch={this._onSearch.bind(this)} />
+				<p className="hint">(点按查看详情)</p>
 			</div>
 		);
 	}
@@ -299,7 +300,7 @@ export default class Management extends Component {
 
 		return (
 			<div className="management-page">
-				<span className="go-back" onClick={(evt)=> browserHistory.goBack()}>回上一页</span>
+				<span className="go-back" onClick={(evt)=> browserHistory.push('/')}>回上一页</span>
 				<a className="back-to-top" href="#">回顶部</a>
 
 				{(()=> {

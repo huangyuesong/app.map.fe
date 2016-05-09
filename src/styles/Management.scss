@@ -1,4 +1,5 @@
 .management-page {
+
     .loading {
         background: rgb(31, 41, 51);
         height: 2rem;
@@ -18,7 +19,6 @@
     }
 
     .react-listview-wrapper {
-        top: 7rem;
         z-index: 20;
     }
 
@@ -34,40 +34,37 @@
         outline: 0;
     }
 
-    .fixed-wrapper {
+    .go-back {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 30;
+        right: .5rem;
+        bottom: 5.5rem;
+        width: 4.5rem;
+        height: 4.5rem;
+        line-height: 4.5rem;
+        border-radius: 4.5rem;
+        -webkit-border-radius: 4.5rem;
+        -moz-border-radius: 4.5rem;
+        text-align: center;
+        border: .1rem solid rgba(0, 0, 0, 0.1);
         background: white;
+        z-index: 50;
+    }
 
-        .back {
-            z-index: 40;
-            top: .5rem;
-            left: .3rem;
-            position: absolute;
-        }
-
-        .district-select-wrapper {
-            text-align: center;
-
-            select {
-                width: 33%;
-            }
-        }
-
-        .search-wrapper {
-            z-index: 30;
-            text-align: center;
-
-            input {
-                width: 23rem;
-            }
-
-            span {
-                margin: 0;
-            }
-        }
+    .back-to-top {
+        position: fixed;
+        right: .5rem;
+        bottom: .5rem;
+        width: 4.5rem;
+        height: 4.5rem;
+        line-height: 4.5rem;
+        border-radius: 4.5rem;
+        -webkit-border-radius: 4.5rem;
+        -moz-border-radius: 4.5rem;
+        text-align: center;
+        border: .1rem solid rgba(0, 0, 0, 0.1);
+        background: white;
+        z-index: 50;
+        text-decoration: none;
+        color: black;
     }
 }

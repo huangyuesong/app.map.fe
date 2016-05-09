@@ -8,9 +8,10 @@ import '../styles/Management.scss';
 
 import ListView from 'listview-react';
 import Tab from './Tab';
-import Back from './Back';
 import Search from './Search';
 import DistrictSelect from './DistrictSelect';
+
+import { browserHistory } from 'react-router';
 
 const pageSize = 10;
 
@@ -41,10 +42,7 @@ export default class Management extends Component {
 		return (
 			<div key={idx} className="site-info-row-wrapper">
 				<p>{item.name}</p>
-
-				<p>{item.longitude}</p>
-
-				<p>{item.latitude}</p>
+				<p>{item.city}</p>
 			</div>
 		);
 	}
@@ -53,10 +51,7 @@ export default class Management extends Component {
 		return (
 			<div key={idx} className="mac-room-info-row-wrapper">
 				<p>{item.name}</p>
-
-				<p>{item.longitude}</p>
-
-				<p>{item.latitude}</p>
+				<p>{item.city}</p>
 			</div>
 		);
 	}
@@ -212,6 +207,20 @@ export default class Management extends Component {
 		return null;
 	}
 
+	_renderHeader () {
+		return (
+			<div className="fixed-wrapper">
+				<Tab onSelect={(idx)=> this.setState({seletedTab: idx})} />
+				<DistrictSelect 
+					districts={this.districts}
+					onSelect={this._onDistrictSelect.bind(this)} />
+				<Search 
+					target={this.state.seletedTab === 0 ? '基站' : '机房'}
+					onSearch={this._onSearch.bind(this)} />
+			</div>
+		);
+	}
+
 	_manualyLoad () {
 		this.setState({
 			needManualyLoading: false,
@@ -285,21 +294,13 @@ export default class Management extends Component {
 
 	render () {
 		let listviewStyle = {
-			height: window.innerHeight - 60,
+			height: window.innerHeight,
 		};
 
 		return (
 			<div className="management-page">
-				<div className="fixed-wrapper">
-					<Tab onSelect={(idx)=> this.setState({seletedTab: idx})} />
-					<DistrictSelect 
-						districts={this.districts}
-						onSelect={this._onDistrictSelect.bind(this)} />
-					<Search 
-						target={this.state.seletedTab === 0 ? '基站' : '机房'}
-						onSearch={this._onSearch.bind(this)} />
-					<Back />
-				</div>
+				<span className="go-back" onClick={(evt)=> browserHistory.goBack()}>回上一页</span>
+				<a className="back-to-top" href="#">回顶部</a>
 
 				{(()=> {
 					if (this.state.seletedTab === 0) {
@@ -311,8 +312,8 @@ export default class Management extends Component {
 								enableOnEndReachedEvent={true}
 								onEndReached={this._fetchSite.bind(this)}
 								renderPullUI={this._renderLoading.bind(this)}
-								renderFooter={this._renderLoading.bind(this)}
-								onEndReachedThreshol={150} />
+								renderHeader={this._renderHeader.bind(this)}
+								renderFooter={this._renderLoading.bind(this)} />
 						);
 					} else if (this.state.seletedTab === 1) {
 						return (
@@ -323,8 +324,8 @@ export default class Management extends Component {
 								enableOnEndReachedEvent={true}
 								onEndReached={this._fetchMacRoom.bind(this)}
 								renderPullUI={this._renderLoading.bind(this)}
-								renderFooter={this._renderLoading.bind(this)}
-								onEndReachedThreshol={150} />
+								renderHeader={this._renderHeader.bind(this)}
+								renderFooter={this._renderLoading.bind(this)} />
 						);
 					}
 				})()}

@@ -38,9 +38,15 @@ export default class Management extends Component {
 		alert(err);
 	}
 
+	_onSiteClick (site) {
+		window.localStorage.site = JSON.stringify(site);
+		
+		browserHistory.push('/SiteDetail');
+	}
+
 	_renderSiteList (item, idx) {
 		return (
-			<div key={idx} className="site-info-row-wrapper">
+			<div key={idx} className="site-info-row-wrapper" onClick={(evt)=> this._onSiteClick(item)}>
 				<p>{item.name}</p>
 				<p>{item.city}</p>
 			</div>
@@ -49,7 +55,7 @@ export default class Management extends Component {
 
 	_renderMacRoomList (item, idx) {
 		return (
-			<div key={idx} className="mac-room-info-row-wrapper">
+			<div key={idx} className="mac-room-info-row-wrapper" onClick={()=> console.log(item.id)}>
 				<p>{item.name}</p>
 				<p>{item.city}</p>
 			</div>
@@ -96,12 +102,15 @@ export default class Management extends Component {
 					loading: false,
 					listData: this.state.listData.concat(data.sites),
 					pageIndex: this.state.pageIndex + 1,
+				}, ()=> {
+					this.listview.unlockReachEndEvent();
 				});
 			}, 500);
 		})
 		.catch((err)=> {
 			this.setState({
 				needManualyLoading: true,
+				loading: false,
 			}, ()=> {
 				this._errorHandler(err);
 			});
@@ -148,12 +157,15 @@ export default class Management extends Component {
 					loading: false,
 					listData: this.state.listData.concat(data.macRooms),
 					pageIndex: this.state.pageIndex + 1,
+				}, ()=> {
+					this.listview.unlockReachEndEvent();
 				});
 			}, 500);
 		})
 		.catch((err)=> {
 			this.setState({
 				needManualyLoading: true,
+				loading: false,
 			}, ()=> {
 				this._errorHandler(err);
 			});
@@ -307,6 +319,7 @@ export default class Management extends Component {
 					if (this.state.seletedTab === 0) {
 						return (
 							<ListView
+								ref={(view)=> this.listview = view}
 								style={listviewStyle}
 								data={this.state.listData}
 								renderItem={this._renderSiteList.bind(this)}
@@ -319,6 +332,7 @@ export default class Management extends Component {
 					} else if (this.state.seletedTab === 1) {
 						return (
 							<ListView
+								ref={(view)=> this.listview = view}
 								style={listviewStyle}
 								data={this.state.listData}
 								renderItem={this._renderMacRoomList.bind(this)}

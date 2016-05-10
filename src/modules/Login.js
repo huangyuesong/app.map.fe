@@ -24,7 +24,6 @@ export default class Login extends Component {
 	}
 
 	_onLoginBtnClick (evt) {
-
 		const url = `${config.energySystemURL}/mobileLoginIn`;
 		let form = new FormData();
 		form.append('username', this.state.username);

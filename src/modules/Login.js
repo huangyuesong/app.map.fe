@@ -24,10 +24,6 @@ export default class Login extends Component {
 	}
 
 	_onLoginBtnClick (evt) {
-		if (this.state.username === 'root' && this.state.password === 'root') {
-			browserHistory.push('/Management');
-			return;
-		}
 
 		const url = `${config.energySystemURL}/mobileLoginIn`;
 		let form = new FormData();
@@ -43,13 +39,17 @@ export default class Login extends Component {
 		})
 		.then((json)=> {
 			if (json.success) {
-				let { cId, companyLevel, dataPlace } = json;
+				if (json.isAdministrator && confirm('您是系统管理员，要进入管理界面吗？')) {
+					browserHistory.push('/Management');
+				} else {
+					let { cId, companyLevel, dataPlace } = json;
 
-				window.localStorage.cId = cId;
-				window.localStorage.companyLevel = companyLevel;
-				window.localStorage.dataPlace = dataPlace;
+					window.localStorage.cId = cId;
+					window.localStorage.companyLevel = companyLevel;
+					window.localStorage.dataPlace = dataPlace;
 
-				browserHistory.push(`/Map`);
+					browserHistory.push(`/Map`);
+				}
 			} else {
 				this._errorHandler(json.errors);
 			}

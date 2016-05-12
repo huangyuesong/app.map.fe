@@ -1,10 +1,15 @@
 .site-datail-wrapper {
 	width: 20rem;
 	margin: 0 auto;
-	padding: 1rem;
+	padding: 1.5rem;
 
-	input[type="text"], select {
+	input[type="text"], input[type="date"], select {
 		border: .1rem solid rgba(0, 0, 0, 0.2);
 		width: 100%;
+	}
+
+	.back {
+		top: .3rem;
+		left: .3rem;
 	}
 }

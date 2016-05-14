@@ -43,7 +43,7 @@ export default class SiteDetail extends Component {
 			powerId: powerId,
 			powerPrice: powerPrice,
 			typeId: typeId,
-			useDate: useDate,
+			useDate: useDate.substring(0, 10),
 			wallInfo: wallInfo,
 		};
 	}

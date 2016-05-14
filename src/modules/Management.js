@@ -296,11 +296,13 @@ export default class Management extends Component {
 			this.setState({
 				listData: [],
 				pageIndex: 1,
+				fetchMoreData: true,
 			}, ()=> this._fetchMacRoom());
 		} else if (this.state.seletedTab === 1 && nextState.seletedTab === 0) {
 			this.setState({
 				listData: [],
 				pageIndex: 1,
+				fetchMoreData: true,
 			}, ()=> this._fetchSite());
 		}
 	}

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --inline --content-base public --history-api-fallback --hot --port 8081",
+    "dev": "webpack-dev-server --inline --content-base public --history-api-fallback --hot --host 0.0.0.0 --port 8081 --colors --progress",
     "prod": "webpack -p && node server.js"
   },
   "author": "",

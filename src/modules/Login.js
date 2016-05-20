@@ -38,16 +38,10 @@ export default class Login extends Component {
 		})
 		.then((json)=> {
 			if (json.success) {
-				if (json.isAdministrator && confirm('您是系统管理员，要进入管理界面吗？')) {
-					browserHistory.push('/Management');
+				if (json.isAdministrator) {
+					browserHistory.push(`/Management?username=${this.state.username}&password=${this.state.password}`);
 				} else {
-					let { cId, companyLevel, dataPlace } = json;
-
-					window.localStorage.cId = cId;
-					window.localStorage.companyLevel = companyLevel;
-					window.localStorage.dataPlace = dataPlace;
-
-					browserHistory.push(`/Map`);
+					browserHistory.push(`/Map?username=${this.state.username}&password=${this.state.password}`);
 				}
 			} else {
 				this._errorHandler(json.errors);

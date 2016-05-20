@@ -311,11 +311,16 @@ export default class Management extends Component {
 		let listviewStyle = {
 			height: window.innerHeight,
 		};
+		let { username, password } = this.props.location.query;
 
 		return (
 			<div className="management-page">
 				<span className="go-back" onClick={(evt)=> browserHistory.push('/')}>回上一页</span>
 				<a className="back-to-top" href="#">回顶部</a>
+				<span className="go-to-map" 
+						onClick={evt=> browserHistory.push(`/Map?username=${username}&password=${password}`)}>
+					查看地图
+				</span>
 
 				{(()=> {
 					if (this.state.seletedTab === 0) {

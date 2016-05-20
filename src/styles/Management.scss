@@ -73,4 +73,19 @@
         text-decoration: none;
         color: black;
     }
+    .go-to-map {
+        position: fixed;
+        right: .5rem;
+        bottom: 10.5rem;
+        width: 4.5rem;
+        height: 4.5rem;
+        line-height: 4.5rem;
+        border-radius: 4.5rem;
+        -webkit-border-radius: 4.5rem;
+        -moz-border-radius: 4.5rem;
+        text-align: center;
+        border: .1rem solid rgba(0, 0, 0, 0.1);
+        background: white;
+        z-index: 50;
+    }
 }

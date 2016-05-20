@@ -3,8 +3,7 @@ import React, {
 } from 'react';
 
 import Loading from './Loading';
-
-import Back from './Back';
+import { browserHistory } from 'react-router';
 
 import config from '../../config/index';
 
@@ -161,7 +160,7 @@ export default class MapView extends Component {
 		let { energySystemURL } = config;
 
 		let form = new FormData();
-		form.append('cId', JSON.stringify(cId.split(',').map(Number)));
+		form.append('cId', JSON.stringify(cId));
 		form.append('center', JSON.stringify(gcj02towgs84(lng, lat)));
 		form.append('southwest', JSON.stringify(gcj02towgs84(southwest.lng, southwest.lat)));
 		form.append('northeast', JSON.stringify(gcj02towgs84(northeast.lng, northeast.lat)));
@@ -366,41 +365,56 @@ export default class MapView extends Component {
 	}
 
 	componentDidMount () {
-		let { cId, companyLevel, dataPlace } = window.localStorage;
-		// let { cId, companyLevel, dataPlace } = this.props.location.query;
+		let { query } = this.props.location;
+		Object.keys(this.props.location.query).map(key=> {
+			query[key.replace(/amp\;/, '')] = query[key];
+		});
 
-		if (dataPlace === '移动') {
-			dataPlace = '北京';
+		let { username, password } = query;
+		username = username || window.localStorage.username;
+		password = password || window.localStorage.password;
+		if (!username || !password) {
+			alert('Login Error!');
 		}
 
-		this._initMapWithCityName(dataPlace, cId)
-		.then((map)=> {
-			this.map = map;
+		let form = new FormData();
+		form.append('username', username);
+		form.append('password', password);
 
-			map.setZoom(companyLevel * 3);
-			this._fetchMarker(cId);
-		})
-		.catch((err)=> {
-			this._errorHandler(err);
-		});
+		fetch(`${config.energySystemURL}/mobileLoginIn`, {
+			method: 'post',
+			body: form,
+		}).then(res=> res.json())
+			.then(json=> {
+				let { cId, companyLevel, dataPlace } = json;
+
+				if (dataPlace === '移动') {
+					dataPlace = '北京';
+				}
+
+				this._initMapWithCityName(dataPlace, cId)
+				.then((map)=> {
+					this.map = map;
+
+					map.setZoom(companyLevel * 3);
+					this._fetchMarker(cId);
+				})
+				.catch((err)=> {
+					this._errorHandler(err);
+				});
+			});
 	}
 
   	render () {
-		if (this.state.amapLoading) {
-			return (
-				<div className="map-wrapper">
-					<div id="map"></div>
-					<Loading />
-					<Back />
-				</div>
-			);
-		} else {
-			return (
-				<div className="map-wrapper">
-					<div id="map"></div>
-					<Back />
-				</div>
-			);
-		}
+	  	return (
+	  		<div className="map-wrapper">
+				<div id="map"></div>
+				{(()=> this.state.amapLoading ? <Loading /> : null)()}
+				<span className="go-back"
+						onClick={evt=> browserHistory.goBack()} >
+					回上一页
+				</span>
+			</div>
+	  	);
   	}
 }

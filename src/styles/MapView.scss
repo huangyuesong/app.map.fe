@@ -3,3 +3,19 @@ body, html, #app, #map, .map-wrapper {
 	margin: 0px;
 	font: 10 Arial;
 }
+.map-wrapper {
+	.go-back {
+        position: fixed;
+        top: .5rem;
+        left: .5rem;
+        width: 5.5rem;
+        line-height: 2.5rem;
+        border-radius: 4.5rem;
+        -webkit-border-radius: 4.5rem;
+        -moz-border-radius: 4.5rem;
+        text-align: center;
+        border: .1rem solid rgba(0, 0, 0, 0.1);
+        background: white;
+        z-index: 50;
+    }
+}

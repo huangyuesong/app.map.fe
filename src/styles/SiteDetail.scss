@@ -1,15 +1,32 @@
 .site-datail-wrapper {
 	width: 20rem;
 	margin: 0 auto;
-	padding: 1.5rem;
-
+	padding: 3rem 0;
 	input[type="text"], input[type="date"], select {
 		border: .1rem solid rgba(0, 0, 0, 0.2);
 		width: 100%;
 	}
-
-	.back {
-		top: .3rem;
-		left: .3rem;
-	}
+	.go-back, .update, .insert, .delete {
+        position: absolute;
+        top: .5rem;
+        left: .5rem;
+        width: 5.5rem;
+        line-height: 2rem;
+        border-radius: 4.5rem;
+        -webkit-border-radius: 4.5rem;
+        -moz-border-radius: 4.5rem;
+        text-align: center;
+        border: .1rem solid rgba(0, 0, 0, 0.1);
+        background: white;
+        z-index: 50;
+    }
+    .update {
+        left: 6.5rem;
+    }
+    .insert {
+        left: 12.5rem;
+    }
+    .delete {
+        left: 18.5rem;
+    }
 }

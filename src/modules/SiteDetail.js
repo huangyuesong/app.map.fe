@@ -6,7 +6,7 @@ import config from '../../config/index';
 
 import '../styles/SiteDetail.scss';
 
-import Back from './Back';
+import { browserHistory } from 'react-router';
 
 export default class SiteDetail extends Component {
 
@@ -48,10 +48,56 @@ export default class SiteDetail extends Component {
 		};
 	}
 
+	_onUpdate (evt) {
+
+	}
+
+	_onDelete (evt) {
+		if (confirm('确认删除这个基站吗？') || !confirm) {
+			let { energySystemUrl } = config;
+
+			let form = new FormData();
+			form.append('siteId', this.state.id);
+			fetch(`${energySystemUrl}/deleteSite`, {
+				method: 'post',
+				body: form,
+			}).then(res=> res.json())
+				.then(json=> alert(json.success ? '删除成功' : json.errors))
+				.catch(err=> alert(err));
+		}
+	}
+
 	render () {
 		return (
 			<div className="site-datail-wrapper">
-				<Back />
+				<span className="go-back"
+						onClick={evt=> browserHistory.goBack()}>
+					回上一页
+				</span>
+				<span className="update" onClick={this._onUpdate.bind(this)}>
+					保存修改
+				</span>
+				<span className="insert" onClick={evt=> this.setState({
+					area: '',
+					carrierCount: '',
+					city: '',
+					id: '',
+					identityNo: '',
+					isFlag: '',
+					latitude: '',
+					longitude: '',
+					name: '',
+					powerId: '',
+					powerPrice: '',
+					typeId: '',
+					useDate: '',
+					wallInfo: '',
+				}, ()=> alert('请设置基站信息'))}>
+					新增基站
+				</span>
+				<span className="delete" onClick={this._onDelete.bind(this)}>
+					删除
+				</span>
 				<p>基站编号</p>
 				<input type="text" value={this.state.identityNo} 
 					onChange={(evt)=> this.setState({identityNo: evt.target.value})}/>
